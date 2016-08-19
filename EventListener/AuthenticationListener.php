@@ -45,11 +45,6 @@ class AuthenticationListener implements EventSubscriberInterface
             return;
         }
 
-        // BC for SF < 2.4
-        if (null === $eventDispatcher) {
-            $eventDispatcher = $event->getDispatcher();
-        }
-
         try {
             $this->loginManager->logInUser($this->firewallName, $event->getUser(), $event->getResponse());
 

@@ -18,13 +18,13 @@ class EmailUserProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->userManager = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $this->userManager = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $this->userProvider = new EmailUserProvider($this->userManager);
     }
 
     public function testLoadUserByUsername()
     {
-        $user = $this->getMock('FOS\UserBundle\Model\UserInterface');
+        $user = $this->createMock('FOS\UserBundle\Model\UserInterface');
         $this->userManager->expects($this->once())
             ->method('findUserByUsernameOrEmail')
             ->with('foobar')
@@ -56,7 +56,7 @@ class EmailUserProviderTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue('123'));
 
-        $refreshedUser = $this->getMock('FOS\UserBundle\Model\UserInterface');
+        $refreshedUser = $this->createMock('FOS\UserBundle\Model\UserInterface');
         $this->userManager->expects($this->once())
             ->method('findUserBy')
             ->with(array('id' => '123'))
@@ -74,7 +74,7 @@ class EmailUserProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testRefreshInvalidUser()
     {
-        $user = $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
+        $user = $this->createMock('Symfony\Component\Security\Core\User\UserInterface');
 
         $this->userProvider->refreshUser($user);
     }

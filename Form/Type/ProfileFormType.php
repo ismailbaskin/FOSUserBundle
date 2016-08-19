@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\Form\Type;
 
-use FOS\UserBundle\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,7 +33,7 @@ class ProfileFormType extends AbstractType
     {
         $this->buildUserForm($builder, $options);
 
-        $builder->add('current_password', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'), array(
+        $builder->add('current_password', 'Symfony\Component\Form\Extension\Core\Type\PasswordType', array(
             'label' => 'form.current_password',
             'translation_domain' => 'FOSUserBundle',
             'mapped' => false,
@@ -79,7 +78,7 @@ class ProfileFormType extends AbstractType
     {
         $builder
             ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
-            ->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
+            ->add('email', 'Symfony\Component\Form\Extension\Core\Type\EmailType', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
         ;
     }
 }

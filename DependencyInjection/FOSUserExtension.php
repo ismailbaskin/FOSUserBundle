@@ -26,15 +26,6 @@ class FOSUserExtension extends Extension
             'registry' => 'doctrine',
             'tag' => 'doctrine.event_subscriber',
         ),
-        'mongodb' => array(
-            'registry' => 'doctrine_mongodb',
-            'tag' => 'doctrine_mongodb.odm.event_subscriber',
-        ),
-        'couchdb' => array(
-            'registry' => 'doctrine_couchdb',
-            'tag' => 'doctrine_couchdb.event_subscriber',
-            'listener_class' => 'FOS\UserBundle\Doctrine\CouchDB\UserListener',
-        ),
     );
 
     public function load(array $configs, ContainerBuilder $container)
@@ -46,18 +37,12 @@ class FOSUserExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if ('custom' !== $config['db_driver']) {
-            if (isset(self::$doctrineDrivers[$config['db_driver']])) {
-                $loader->load('doctrine.xml');
-                $container->setAlias('fos_user.doctrine_registry', new Alias(self::$doctrineDrivers[$config['db_driver']]['registry'], false));
-            } else {
-                $loader->load(sprintf('%s.xml', $config['db_driver']));
-            }
-            $container->setParameter($this->getAlias() . '.backend_type_' . $config['db_driver'], true);
-        }
+        $loader->load('doctrine.xml');
+        $container->setAlias('fos_user.doctrine_registry', new Alias(self::$doctrineDrivers['orm']['registry'], false));
+        $container->setParameter($this->getAlias() . '.backend_type_orm', true);
 
         // Configure the factory for both Symfony 2.3 and 2.6+
-        if (isset(self::$doctrineDrivers[$config['db_driver']])) {
+        if (isset(self::$doctrineDrivers['orm'])) {
             $definition = $container->getDefinition('fos_user.object_manager');
             if (method_exists($definition, 'setFactory')) {
                 $definition->setFactory(array(new Reference('fos_user.doctrine_registry'), 'getManager'));
@@ -71,13 +56,8 @@ class FOSUserExtension extends Extension
             $loader->load(sprintf('%s.xml', $basename));
         }
 
-        // Set the SecurityContext for Symfony <2.6
-        // Should go back to simple xml configuration after <2.6 support
-        if (interface_exists('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')) {
-            $tokenStorageReference = new Reference('security.token_storage');
-        } else {
-            $tokenStorageReference = new Reference('security.context');
-        }
+        $tokenStorageReference = new Reference('security.token_storage');
+
         $container
             ->getDefinition('fos_user.security.login_manager')
             ->replaceArgument(0, $tokenStorageReference)
@@ -93,11 +73,11 @@ class FOSUserExtension extends Extension
         $container->setAlias('fos_user.util.token_generator', $config['service']['token_generator']);
         $container->setAlias('fos_user.user_manager', $config['service']['user_manager']);
 
-        if ($config['use_listener'] && isset(self::$doctrineDrivers[$config['db_driver']])) {
+        if ($config['use_listener'] && isset(self::$doctrineDrivers['orm'])) {
             $listenerDefinition = $container->getDefinition('fos_user.user_listener');
-            $listenerDefinition->addTag(self::$doctrineDrivers[$config['db_driver']]['tag']);
-            if (isset(self::$doctrineDrivers[$config['db_driver']]['listener_class'])) {
-                $listenerDefinition->setClass(self::$doctrineDrivers[$config['db_driver']]['listener_class']);
+            $listenerDefinition->addTag(self::$doctrineDrivers['orm']['tag']);
+            if (isset(self::$doctrineDrivers['orm']['listener_class'])) {
+                $listenerDefinition->setClass(self::$doctrineDrivers['orm']['listener_class']);
             }
         }
 
@@ -107,7 +87,6 @@ class FOSUserExtension extends Extension
 
         $this->remapParametersNamespaces($config, $container, array(
             ''          => array(
-                'db_driver' => 'fos_user.storage',
                 'firewall_name' => 'fos_user.firewall_name',
                 'model_manager_name' => 'fos_user.model_manager_name',
                 'user_class' => 'fos_user.model.user.class',
@@ -128,10 +107,6 @@ class FOSUserExtension extends Extension
 
         if (!empty($config['resetting'])) {
             $this->loadResetting($config['resetting'], $container, $loader, $config['from_email']);
-        }
-
-        if (!empty($config['group'])) {
-            $this->loadGroups($config['group'], $container, $loader, $config['db_driver']);
         }
     }
 
@@ -191,27 +166,6 @@ class FOSUserExtension extends Extension
             ),
             'email' => 'fos_user.resetting.email.%s',
             'form' => 'fos_user.resetting.form.%s',
-        ));
-    }
-
-    private function loadGroups(array $config, ContainerBuilder $container, XmlFileLoader $loader, $dbDriver)
-    {
-        $loader->load('group.xml');
-        if ('custom' !== $dbDriver) {
-            if (isset(self::$doctrineDrivers[$dbDriver])) {
-                $loader->load('doctrine_group.xml');
-            } else {
-                $loader->load(sprintf('%s_group.xml', $dbDriver));
-            }
-        }
-
-        $container->setAlias('fos_user.group_manager', $config['group_manager']);
-
-        $this->remapParametersNamespaces($config, $container, array(
-            '' => array(
-                'group_class' => 'fos_user.model.group.class',
-            ),
-            'form' => 'fos_user.group.form.%s',
         ));
     }
 

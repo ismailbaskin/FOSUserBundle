@@ -17,15 +17,15 @@ class FlashListenerTest extends \PHPUnit_Framework_TestCase
     {
         $this->event = new Event();
 
-        $flashBag = $this->getMock('Symfony\Component\HttpFoundation\Session\Flash\FlashBag');
+        $flashBag = $this->createMock('Symfony\Component\HttpFoundation\Session\Flash\FlashBag');
 
-        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\Session');
+        $session = $this->createMock('Symfony\Component\HttpFoundation\Session\Session');
         $session
             ->expects($this->once())
             ->method('getFlashBag')
             ->willReturn($flashBag);
 
-        $translator = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
+        $translator = $this->createMock('Symfony\Component\Translation\TranslatorInterface');
 
         $this->listener = new FlashListener($session, $translator);
     }

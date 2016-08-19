@@ -18,7 +18,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $user = new TestUser();
 
         $username = 'test_username';
@@ -48,7 +48,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function testActivateWithValidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $username = 'test_username';
 
         $user = new TestUser();
@@ -77,7 +77,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testActivateWithInvalidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $invalidusername = 'invalid_username';
 
         $userManagerMock->expects($this->once())
@@ -94,7 +94,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function testDeactivateWithValidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $username = 'test_username';
 
         $user = new TestUser();
@@ -123,7 +123,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testDeactivateWithInvalidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $invalidusername = 'invalid_username';
 
         $userManagerMock->expects($this->once())
@@ -140,7 +140,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function testPromoteWithValidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $username = 'test_username';
 
         $user = new TestUser();
@@ -169,7 +169,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testPromoteWithInvalidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $invalidusername = 'invalid_username';
 
         $userManagerMock->expects($this->once())
@@ -186,7 +186,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function testDemoteWithValidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $username    = 'test_username';
 
         $user = new TestUser();
@@ -215,7 +215,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testDemoteWithInvalidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
         $invalidusername    = 'invalid_username';
 
         $userManagerMock->expects($this->once())
@@ -232,7 +232,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
 
     public function testChangePasswordWithValidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
 
         $user = new TestUser();
         $username    = 'test_username';
@@ -264,7 +264,7 @@ class UserManipulatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testChangePasswordWithInvalidUsername()
     {
-        $userManagerMock = $this->getMock('FOS\UserBundle\Model\UserManagerInterface');
+        $userManagerMock = $this->createMock('FOS\UserBundle\Model\UserManagerInterface');
 
         $invalidusername  = 'invalid_username';
         $password         = 'test_password';

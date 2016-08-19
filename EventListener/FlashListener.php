@@ -21,9 +21,6 @@ class FlashListener implements EventSubscriberInterface
 {
     private static $successMessages = array(
         FOSUserEvents::CHANGE_PASSWORD_COMPLETED => 'change_password.flash.success',
-        FOSUserEvents::GROUP_CREATE_COMPLETED => 'group.flash.created',
-        FOSUserEvents::GROUP_DELETE_COMPLETED => 'group.flash.deleted',
-        FOSUserEvents::GROUP_EDIT_COMPLETED => 'group.flash.updated',
         FOSUserEvents::PROFILE_EDIT_COMPLETED => 'profile.flash.updated',
         FOSUserEvents::REGISTRATION_COMPLETED => 'registration.flash.user_created',
         FOSUserEvents::RESETTING_RESET_COMPLETED => 'resetting.flash.success',
@@ -42,9 +39,6 @@ class FlashListener implements EventSubscriberInterface
     {
         return array(
             FOSUserEvents::CHANGE_PASSWORD_COMPLETED => 'addSuccessFlash',
-            FOSUserEvents::GROUP_CREATE_COMPLETED => 'addSuccessFlash',
-            FOSUserEvents::GROUP_DELETE_COMPLETED => 'addSuccessFlash',
-            FOSUserEvents::GROUP_EDIT_COMPLETED => 'addSuccessFlash',
             FOSUserEvents::PROFILE_EDIT_COMPLETED => 'addSuccessFlash',
             FOSUserEvents::REGISTRATION_COMPLETED => 'addSuccessFlash',
             FOSUserEvents::RESETTING_RESET_COMPLETED => 'addSuccessFlash',
@@ -53,11 +47,6 @@ class FlashListener implements EventSubscriberInterface
 
     public function addSuccessFlash(Event $event, $eventName = null)
     {
-        // BC for SF < 2.4
-        if (null === $eventName) {
-            $eventName = $event->getName();
-        }
-
         if (!isset(self::$successMessages[$eventName])) {
             throw new \InvalidArgumentException('This event does not correspond to a known flash message');
         }

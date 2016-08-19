@@ -18,9 +18,6 @@ class RoutingTest extends \PHPUnit_Framework_TestCase
 
         $collection = new RouteCollection();
         $collection->addCollection($loader->load(__DIR__.'/../../Resources/config/routing/change_password.xml'));
-        $subCollection = $loader->load(__DIR__.'/../../Resources/config/routing/group.xml');
-        $subCollection->addPrefix('/group');
-        $collection->addCollection($subCollection);
         $subCollection = $loader->load(__DIR__.'/../../Resources/config/routing/profile.xml');
         $subCollection->addPrefix('/profile');
         $collection->addCollection($subCollection);
@@ -42,12 +39,6 @@ class RoutingTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('fos_user_change_password', '/change-password', array('GET', 'POST')),
-
-            array('fos_user_group_list', '/group/list', array('GET')),
-            array('fos_user_group_new', '/group/new', array('GET', 'POST')),
-            array('fos_user_group_show', '/group/{groupName}', array('GET')),
-            array('fos_user_group_edit', '/group/{groupName}/edit', array('GET', 'POST')),
-            array('fos_user_group_delete', '/group/{groupName}/delete', array('GET')),
 
             array('fos_user_profile_show', '/profile/', array('GET')),
             array('fos_user_profile_edit', '/profile/edit', array('GET', 'POST')),

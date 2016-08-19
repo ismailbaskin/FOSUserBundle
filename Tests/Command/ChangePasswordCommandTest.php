@@ -46,7 +46,7 @@ class ChangePasswordCommandTest extends \PHPUnit_Framework_TestCase
 
         $application = new Application();
 
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array(
+        $dialog = $this->createMock('Symfony\Component\Console\Helper\DialogHelper', array(
             'askAndValidate',
             'askHiddenResponseAndValidate',
         ));
@@ -82,7 +82,7 @@ class ChangePasswordCommandTest extends \PHPUnit_Framework_TestCase
 
         $application = new Application();
 
-        $helper = $this->getMock('Symfony\Component\Console\Helper\QuestionHelper', array(
+        $helper = $this->createMock('Symfony\Component\Console\Helper\QuestionHelper', array(
             'ask',
         ));
         $helper->expects($this->at(0))
@@ -122,7 +122,7 @@ class ChangePasswordCommandTest extends \PHPUnit_Framework_TestCase
 
     private function getContainer($username, $password)
     {
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
 
         $manipulator = $this->getMockBuilder('FOS\UserBundle\Util\UserManipulator')
             ->disableOriginalConstructor()

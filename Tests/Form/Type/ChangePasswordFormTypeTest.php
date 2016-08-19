@@ -4,7 +4,6 @@ namespace FOS\UserBundle\Tests\Form\Type;
 
 use FOS\UserBundle\Form\Type\ChangePasswordFormType;
 use FOS\UserBundle\Tests\TestUser;
-use FOS\UserBundle\Util\LegacyFormHelper;
 
 class ChangePasswordFormTypeTest extends ValidatorExtensionTypeTestCase
 {
@@ -13,7 +12,7 @@ class ChangePasswordFormTypeTest extends ValidatorExtensionTypeTestCase
         $user = new TestUser();
         $user->setPassword('foo');
 
-        $form = $this->factory->create(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ChangePasswordFormType'), $user);
+        $form = $this->factory->create('FOS\UserBundle\Form\Type\ChangePasswordFormType', $user);
         $formData = array(
             'current_password'      => 'foo',
             'plainPassword'         => array(

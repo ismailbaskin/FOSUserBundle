@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\DependencyInjection;
 
-use FOS\UserBundle\Util\LegacyFormHelper;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -36,19 +35,8 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('fos_user');
 
-        $supportedDrivers = array('orm', 'mongodb', 'couchdb', 'propel', 'custom');
-
         $rootNode
             ->children()
-                ->scalarNode('db_driver')
-                    ->validate()
-                        ->ifNotInArray($supportedDrivers)
-                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
-                    ->end()
-                    ->cannotBeOverwritten()
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                ->end()
                 ->scalarNode('user_class')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('firewall_name')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('model_manager_name')->defaultNull()->end()
@@ -62,15 +50,6 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('sender_name')->defaultValue('webmaster')->cannotBeEmpty()->end()
                     ->end()
                 ->end()
-            ->end()
-            // Using the custom driver requires changing the manager services
-            ->validate()
-                ->ifTrue(function($v){return 'custom' === $v['db_driver'] && 'fos_user.user_manager.default' === $v['service']['user_manager'];})
-                ->thenInvalid('You need to specify your own user manager service when using the "custom" driver.')
-            ->end()
-            ->validate()
-                ->ifTrue(function($v){return 'custom' === $v['db_driver'] && !empty($v['group']) && 'fos_user.group_manager.default' === $v['group']['group_manager'];})
-                ->thenInvalid('You need to specify your own group manager service when using the "custom" driver.')
             ->end();
 
         $this->addProfileSection($rootNode);
@@ -78,7 +57,6 @@ class Configuration implements ConfigurationInterface
         $this->addRegistrationSection($rootNode);
         $this->addResettingSection($rootNode);
         $this->addServiceSection($rootNode);
-        $this->addGroupSection($rootNode);
 
         return $treeBuilder;
     }
@@ -95,7 +73,7 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->fixXmlConfig('validation_group')
                             ->children()
-                                ->scalarNode('type')->defaultValue(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ProfileFormType'))->end()
+                                ->scalarNode('type')->defaultValue('FOS\UserBundle\Form\Type\ProfileFormType')->end()
                                 ->scalarNode('name')->defaultValue('fos_user_profile_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
@@ -133,7 +111,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\RegistrationFormType'))->end()
+                                ->scalarNode('type')->defaultValue('FOS\UserBundle\Form\Type\RegistrationFormType')->end()
                                 ->scalarNode('name')->defaultValue('fos_user_registration_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
@@ -171,7 +149,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ResettingFormType'))->end()
+                                ->scalarNode('type')->defaultValue('FOS\UserBundle\Form\Type\ResettingFormType')->end()
                                 ->scalarNode('name')->defaultValue('fos_user_resetting_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
@@ -195,7 +173,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ChangePasswordFormType'))->end()
+                                ->scalarNode('type')->defaultValue('FOS\UserBundle\Form\Type\ChangePasswordFormType')->end()
                                 ->scalarNode('name')->defaultValue('fos_user_change_password_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
@@ -221,32 +199,6 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('token_generator')->defaultValue('fos_user.util.token_generator.default')->end()
                             ->scalarNode('username_canonicalizer')->defaultValue('fos_user.util.canonicalizer.default')->end()
                             ->scalarNode('user_manager')->defaultValue('fos_user.user_manager.default')->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addGroupSection(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('group')
-                    ->canBeUnset()
-                    ->children()
-                        ->scalarNode('group_class')->isRequired()->cannotBeEmpty()->end()
-                        ->scalarNode('group_manager')->defaultValue('fos_user.group_manager.default')->end()
-                        ->arrayNode('form')
-                            ->addDefaultsIfNotSet()
-                            ->fixXmlConfig('validation_group')
-                            ->children()
-                                ->scalarNode('type')->defaultValue(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\GroupFormType'))->end()
-                                ->scalarNode('name')->defaultValue('fos_user_group_form')->end()
-                                ->arrayNode('validation_groups')
-                                    ->prototype('scalar')->end()
-                                    ->defaultValue(array('Registration', 'Default'))
-                                ->end()
-                            ->end()
                         ->end()
                     ->end()
                 ->end()

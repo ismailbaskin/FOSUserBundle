@@ -2,7 +2,6 @@
 
 namespace FOS\UserBundle\Form\Type;
 
-use FOS\UserBundle\Util\LegacyFormHelper;
 use FOS\UserBundle\Form\DataTransformer\UserToUsernameTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,13 +41,7 @@ class UsernameFormType extends AbstractType
      */
     public function getParent()
     {
-        return LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\TextType');
-    }
-
-    // BC for SF < 3.0
-    public function getName()
-    {
-        return $this->getBlockPrefix();
+        return 'Symfony\Component\Form\Extension\Core\Type\TextType';
     }
 
     public function getBlockPrefix()

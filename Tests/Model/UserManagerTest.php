@@ -152,17 +152,17 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     private function getMockCanonicalizer()
     {
-        return $this->getMock('FOS\UserBundle\Util\CanonicalizerInterface');
+        return $this->createMock('FOS\UserBundle\Util\CanonicalizerInterface');
     }
 
     private function getMockEncoderFactory()
     {
-        return $this->getMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
+        return $this->createMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
     }
 
     private function getMockPasswordEncoder()
     {
-        return $this->getMock('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface');
+        return $this->createMock('Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface');
     }
 
     private function getUser()

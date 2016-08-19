@@ -11,7 +11,6 @@
 
 namespace FOS\UserBundle\Tests\DependencyInjection;
 
-use FOS\UserBundle\Util\LegacyFormHelper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use FOS\UserBundle\DependencyInjection\FOSUserExtension;
@@ -21,28 +20,6 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ContainerBuilder */
     protected $configuration;
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testUserLoadThrowsExceptionUnlessDatabaseDriverSet()
-    {
-        $loader = new FOSUserExtension();
-        $config = $this->getEmptyConfig();
-        unset($config['db_driver']);
-        $loader->load(array($config), new ContainerBuilder());
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testUserLoadThrowsExceptionUnlessDatabaseDriverIsValid()
-    {
-        $loader = new FOSUserExtension();
-        $config = $this->getEmptyConfig();
-        $config['db_driver'] = 'foo';
-        $loader->load(array($config), new ContainerBuilder());
-    }
 
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
@@ -58,48 +35,12 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
-    public function testUserLoadThrowsExceptionUnlessGroupModelClassSet()
-    {
-        $loader = new FOSUserExtension();
-        $config = $this->getFullConfig();
-        unset($config['group']['group_class']);
-        $loader->load(array($config), new ContainerBuilder());
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testUserLoadThrowsExceptionUnlessUserModelClassSet()
     {
         $loader = new FOSUserExtension();
         $config = $this->getEmptyConfig();
         unset($config['user_class']);
         $loader->load(array($config), new ContainerBuilder());
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testCustomDriverWithoutManager()
-    {
-        $loader = new FOSUserExtension();
-        $config = $this->getEmptyConfig();
-        $config['db_driver'] = 'custom';
-        $loader->load(array($config), new ContainerBuilder());
-    }
-
-    public function testCustomDriver()
-    {
-        $this->configuration = new ContainerBuilder();
-        $loader = new FOSUserExtension();
-        $config = $this->getEmptyConfig();
-        $config['db_driver'] = 'custom';
-        $config['service']['user_manager'] = 'acme.user_manager';
-        $loader->load(array($config), $this->configuration);
-
-        $this->assertNotHasDefinition('fos_user.user_manager.default');
-        $this->assertAlias('acme.user_manager', 'fos_user.user_manager');
-        $this->assertParameter('custom', 'fos_user.storage');
     }
 
     public function testDisableRegistration()
@@ -146,7 +87,7 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $this->createEmptyConfiguration();
 
-        $this->assertParameter('Acme\MyBundle\Document\User', 'fos_user.model.user.class');
+        $this->assertParameter('Acme\MyBundle\Entity\User', 'fos_user.model.user.class');
     }
 
     public function testUserLoadModelClass()
@@ -160,30 +101,26 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $this->createEmptyConfiguration();
 
-        $this->assertParameter('mongodb', 'fos_user.storage');
         $this->assertParameter(null, 'fos_user.model_manager_name');
         $this->assertAlias('fos_user.user_manager.default', 'fos_user.user_manager');
-        $this->assertNotHasDefinition('fos_user.group_manager');
     }
 
     public function testUserLoadManagerClass()
     {
         $this->createFullConfiguration();
 
-        $this->assertParameter('orm', 'fos_user.storage');
         $this->assertParameter('custom', 'fos_user.model_manager_name');
         $this->assertAlias('acme_my.user_manager', 'fos_user.user_manager');
-        $this->assertAlias('fos_user.group_manager.default', 'fos_user.group_manager');
     }
 
     public function testUserLoadFormClassWithDefaults()
     {
         $this->createEmptyConfiguration();
 
-        $this->assertParameter(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ProfileFormType'), 'fos_user.profile.form.type');
-        $this->assertParameter(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\RegistrationFormType'), 'fos_user.registration.form.type');
-        $this->assertParameter(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ChangePasswordFormType'), 'fos_user.change_password.form.type');
-        $this->assertParameter(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ResettingFormType'), 'fos_user.resetting.form.type');
+        $this->assertParameter('FOS\UserBundle\Form\Type\ProfileFormType', 'fos_user.profile.form.type');
+        $this->assertParameter('FOS\UserBundle\Form\Type\RegistrationFormType', 'fos_user.registration.form.type');
+        $this->assertParameter('FOS\UserBundle\Form\Type\ChangePasswordFormType', 'fos_user.change_password.form.type');
+        $this->assertParameter('FOS\UserBundle\Form\Type\ResettingFormType', 'fos_user.resetting.form.type');
     }
 
     public function testUserLoadFormClass()
@@ -192,7 +129,6 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertParameter('acme_my_profile', 'fos_user.profile.form.type');
         $this->assertParameter('acme_my_registration', 'fos_user.registration.form.type');
-        $this->assertParameter('acme_my_group', 'fos_user.group.form.type');
         $this->assertParameter('acme_my_change_password', 'fos_user.change_password.form.type');
         $this->assertParameter('acme_my_resetting', 'fos_user.resetting.form.type');
     }
@@ -213,7 +149,6 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertParameter('acme_profile_form', 'fos_user.profile.form.name');
         $this->assertParameter('acme_registration_form', 'fos_user.registration.form.name');
-        $this->assertParameter('acme_group_form', 'fos_user.group.form.name');
         $this->assertParameter('acme_change_password_form', 'fos_user.change_password.form.name');
         $this->assertParameter('acme_resetting_form', 'fos_user.resetting.form.name');
     }
@@ -224,7 +159,6 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertHasDefinition('fos_user.profile.form.factory');
         $this->assertHasDefinition('fos_user.registration.form.factory');
-        $this->assertNotHasDefinition('fos_user.group.form.factory');
         $this->assertHasDefinition('fos_user.change_password.form.factory');
         $this->assertHasDefinition('fos_user.resetting.form.factory');
     }
@@ -235,7 +169,6 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertHasDefinition('fos_user.profile.form.factory');
         $this->assertHasDefinition('fos_user.registration.form.factory');
-        $this->assertHasDefinition('fos_user.group.form.factory');
         $this->assertHasDefinition('fos_user.change_password.form.factory');
         $this->assertHasDefinition('fos_user.resetting.form.factory');
     }
@@ -299,12 +232,11 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider userManagerSetFactoryProvider
      */
-    public function testUserManagerSetFactory($dbDriver, $doctrineService)
+    public function testUserManagerSetFactory($doctrineService)
     {
         $this->configuration = new ContainerBuilder();
         $loader = new FOSUserExtension();
         $config = $this->getEmptyConfig();
-        $config['db_driver'] = $dbDriver;
         $loader->load(array($config), $this->configuration);
 
         $definition = $this->configuration->getDefinition('fos_user.object_manager');
@@ -323,9 +255,7 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
     public function userManagerSetFactoryProvider()
     {
         return array(
-            array('orm', 'doctrine'),
-            array('couchdb', 'doctrine_couchdb'),
-            array('mongodb', 'doctrine_mongodb'),
+            array('orm', 'doctrine')
         );
     }
 
@@ -355,9 +285,8 @@ class FOSUserExtensionTest extends \PHPUnit_Framework_TestCase
     protected function getEmptyConfig()
     {
         $yaml = <<<EOF
-db_driver: mongodb
 firewall_name: fos_user
-user_class: Acme\MyBundle\Document\User
+user_class: Acme\MyBundle\Entity\User
 EOF;
         $parser = new Parser();
 
@@ -367,7 +296,6 @@ EOF;
     protected function getFullConfig()
     {
         $yaml = <<<EOF
-db_driver: orm
 firewall_name: fos_user
 use_listener: true
 use_flash_notifications: false
@@ -413,12 +341,6 @@ service:
     email_canonicalizer: acme_my.email_canonicalizer
     username_canonicalizer: acme_my.username_canonicalizer
     user_manager: acme_my.user_manager
-group:
-    group_class: Acme\MyBundle\Entity\Group
-    form:
-        type: acme_my_group
-        name: acme_group_form
-        validation_groups: [acme_group]
 EOF;
         $parser = new Parser();
 

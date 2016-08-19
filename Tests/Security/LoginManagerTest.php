@@ -23,7 +23,7 @@ class LoginManagerTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('The RequestStack is required to run this test.');
         }
 
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $response = $this->createMock('Symfony\Component\HttpFoundation\Response');
 
         $loginManager = $this->createLoginManager('main', $response);
         $loginManager->logInUser('main', $this->mockUser(), $response);
@@ -51,7 +51,7 @@ class LoginManagerTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Legacy test. Container scopes are not supported any more.');
         }
 
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $response = $this->createMock('Symfony\Component\HttpFoundation\Response');
 
         $loginManager = $this->createLoginManager('main', $response, false);
         $loginManager->logInUser('main', $this->mockUser(), $response);
@@ -60,9 +60,9 @@ class LoginManagerTest extends \PHPUnit_Framework_TestCase
     private function createLoginManager($firewallName, Response $response = null, $withRequestStack = true)
     {
         if (interface_exists('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface')) {
-            $tokenStorage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface');
+            $tokenStorage = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface');
         } else {
-            $tokenStorage = $this->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
+            $tokenStorage = $this->createMock('Symfony\Component\Security\Core\SecurityContextInterface');
         }
 
         $tokenStorage
@@ -70,25 +70,25 @@ class LoginManagerTest extends \PHPUnit_Framework_TestCase
             ->method('setToken')
             ->with($this->isInstanceOf('Symfony\Component\Security\Core\Authentication\Token\TokenInterface'));
 
-        $userChecker = $this->getMock('Symfony\Component\Security\Core\User\UserCheckerInterface');
+        $userChecker = $this->createMock('Symfony\Component\Security\Core\User\UserCheckerInterface');
         $userChecker
             ->expects($this->once())
             ->method('checkPostAuth')
             ->with($this->isInstanceOf('FOS\UserBundle\Model\UserInterface'));
 
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $request = $this->createMock('Symfony\Component\HttpFoundation\Request');
 
-        $sessionStrategy = $this->getMock('Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface');
+        $sessionStrategy = $this->createMock('Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface');
         $sessionStrategy
             ->expects($this->once())
             ->method('onAuthentication')
             ->with($request, $this->isInstanceOf('Symfony\Component\Security\Core\Authentication\Token\TokenInterface'));
 
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $getMap = $hasMap = array();
 
         if (true === $withRequestStack) {
-            $requestStack = $this->getMock('Symfony\Component\HttpFoundation\RequestStack');
+            $requestStack = $this->createMock('Symfony\Component\HttpFoundation\RequestStack');
             $requestStack
                 ->expects($this->once())
                 ->method('getCurrentRequest')
@@ -106,7 +106,7 @@ class LoginManagerTest extends \PHPUnit_Framework_TestCase
         }
 
         if (null !== $response) {
-            $rememberMe = $this->getMock('Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface');
+            $rememberMe = $this->createMock('Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface');
             $rememberMe
                 ->expects($this->once())
                 ->method('loginSuccess')
@@ -131,7 +131,7 @@ class LoginManagerTest extends \PHPUnit_Framework_TestCase
 
     private function mockUser()
     {
-        $user = $this->getMock('FOS\UserBundle\Model\UserInterface');
+        $user = $this->createMock('FOS\UserBundle\Model\UserInterface');
         $user
             ->expects($this->once())
             ->method('getRoles')

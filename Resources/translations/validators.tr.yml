@@ -19,7 +19,3 @@ fos_user:
         short: '[-Inf,Inf]Yeni parola çok kısa'
     current_password:
         invalid: 'Girilen parola geçersiz'
-    group:
-        blank: 'Lütfen bir isim girin'
-        short: '[-Inf,Inf]İsim çok kısa'
-        long: '[-Inf,Inf]İsim çok uzun'

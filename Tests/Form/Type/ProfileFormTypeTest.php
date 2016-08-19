@@ -4,7 +4,6 @@ namespace FOS\UserBundle\Tests\Form\Type;
 
 use FOS\UserBundle\Form\Type\ProfileFormType;
 use FOS\UserBundle\Tests\TestUser;
-use FOS\UserBundle\Util\LegacyFormHelper;
 
 class ProfileFormTypeTest extends ValidatorExtensionTypeTestCase
 {
@@ -12,7 +11,7 @@ class ProfileFormTypeTest extends ValidatorExtensionTypeTestCase
     {
         $user = new TestUser();
 
-        $form = $this->factory->create(LegacyFormHelper::getType('FOS\UserBundle\Form\Type\ProfileFormType'), $user);
+        $form = $this->factory->create('FOS\UserBundle\Form\Type\ProfileFormType', $user);
         $formData = array(
             'username'      => 'bar',
             'email'         => 'john@doe.com',

@@ -22,11 +22,11 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Doctrine Common has to be installed for this test to run.');
         }
 
-        $c = $this->getMock('FOS\UserBundle\Util\CanonicalizerInterface');
-        $ef = $this->getMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
-        $class = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
-        $this->om = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
-        $this->repository = $this->getMock('Doctrine\Common\Persistence\ObjectRepository');
+        $c = $this->createMock('FOS\UserBundle\Util\CanonicalizerInterface');
+        $ef = $this->createMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
+        $class = $this->createMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $this->om = $this->createMock('Doctrine\Common\Persistence\ObjectManager');
+        $this->repository = $this->createMock('Doctrine\Common\Persistence\ObjectRepository');
 
         $this->om->expects($this->any())
             ->method('getRepository')

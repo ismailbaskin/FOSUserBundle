@@ -6,7 +6,6 @@ All available configuration options are listed below with their default values.
 .. code-block:: yaml
 
     fos_user:
-        db_driver:              ~ # Required
         firewall_name:          ~ # Required
         user_class:             ~ # Required
         use_listener:           true

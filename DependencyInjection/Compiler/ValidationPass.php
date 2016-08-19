@@ -27,17 +27,7 @@ class ValidationPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasParameter('fos_user.storage')) {
-            return;
-        }
-
-        $storage = $container->getParameter('fos_user.storage');
-
-        if ('custom' === $storage) {
-            return;
-        }
-
-        $validationFile = __DIR__ . '/../../Resources/config/storage-validation/' . $storage . '.xml';
+        $validationFile = __DIR__ . '/../../Resources/config/storage-validation/orm.xml';
 
         if ($container->hasDefinition('validator.builder')) {
             // Symfony 2.5+

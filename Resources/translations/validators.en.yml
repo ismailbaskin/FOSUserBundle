@@ -19,7 +19,3 @@ fos_user:
         short: '[-Inf,Inf]The new password is too short'
     current_password:
         invalid: 'The entered password is invalid'
-    group:
-        blank: 'Please enter a name'
-        short: '[-Inf,Inf]The name is too short'
-        long: '[-Inf,Inf]The name is too long'
